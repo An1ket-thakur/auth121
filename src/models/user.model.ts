@@ -1,7 +1,34 @@
 import { sequelize } from "../config/sequelize";
-import { DataTypes } from "sequelize";
+import { DataTypes, Model, Optional } from "sequelize";
 
-const UserModel = sequelize.define(
+interface UserAttributes {
+  id: number;
+  name: string;
+  email: string;
+  passwordHash: string;
+  role: string;
+  isEmailVerified: boolean;
+  twoFactorEnabled: boolean;
+  twoFactorSecret: string;
+  tokenVersion: number;
+  resetPasswordToken: string;
+  resetPasswordExpiry: Date;
+}
+
+interface UserCreationAttributes
+  extends Optional<
+    UserAttributes,
+    | "isEmailVerified"
+    | "resetPasswordExpiry"
+    | "twoFactorSecret"
+    | "twoFactorEnabled"
+    | "tokenVersion"
+    | "resetPasswordToken"
+    | "role"
+    | "id"
+  > {}
+
+const UserModel = sequelize.define<Model<UserAttributes, UserCreationAttributes>>(
   "users",
   {
     id: {
@@ -66,3 +93,5 @@ const UserModel = sequelize.define(
     timestamps: true,
   }
 );
+
+export { UserModel };
